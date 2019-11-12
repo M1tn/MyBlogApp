@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyBlogApp.DAL.Entities;
 using MyBlogApp.ViewModels;
+using WebLoginAndRegister.Helpers;
 
 namespace MyBlogApp.Controllers
 {
@@ -66,11 +67,11 @@ namespace MyBlogApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    var errrors = CustomValidator.GetErrorsByModel(ModelState);
-            //    return BadRequest(errrors);
-            //}
+            if (!ModelState.IsValid)
+            {
+                var errrors = CustomValidator.GetErrorsByModel(ModelState);
+                return BadRequest(errrors);
+            }
 
             var user = new DbUser
             {

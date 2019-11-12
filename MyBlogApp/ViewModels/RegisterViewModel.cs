@@ -14,7 +14,7 @@ namespace MyBlogApp.ViewModels
         [Required(ErrorMessage = "Поле не може бути пустим!")]
         public string Password { get; set; }
         [Required(ErrorMessage = "Поле не може бути пустим!")]
-        public string PasswordConfirm { get; set; }
+        public string Confirm_Password { get; set; }
         
     }
 }
