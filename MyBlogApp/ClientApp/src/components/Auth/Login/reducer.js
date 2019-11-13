@@ -1,9 +1,9 @@
-import registerService from './registerService';
+import loginService from './loginService';
 import { push } from 'connected-react-router';
 
-export const REGISTER_STARTED = "user/REGISTER_STARTED";
-export const REGISTER_SUCCESS = "user/REGISTER_SUCCESS";
-export const REGISTER_FAILED = "user/REGISTER_FAILED";
+export const LOGIN_STARTED = "user/LOGIN_STARTED";
+export const LOGIN_SUCCESS = "user/LOGIN_SUCCESS";
+export const LOGIN_FAILED = "user/LOGIN_FAILED";
 
 const initialState = {
     loading: false,
@@ -12,20 +12,20 @@ const initialState = {
     errors: {}
 }
 
-export const registerReducer = (state = initialState, action) => {
+export const loginReducer = (state = initialState, action) => {
     let newState = state;
     switch (action.type) {
-        case REGISTER_STARTED: {
+        case LOGIN_STARTED: {
             //console.log('-----Begin register User--------');
             newState = {...state, loading: true};
             break;
         }
-        case REGISTER_SUCCESS: {
+        case LOGIN_SUCCESS: {
             //console.log('-----Success register User--------');
             newState = {...state, loading: false};
             break;
         }
-        case REGISTER_FAILED: {
+        case LOGIN_FAILED: {
             //console.log('-----Filed register User--------');
             newState = {
                 ...state, 
@@ -41,17 +41,17 @@ export const registerReducer = (state = initialState, action) => {
     return newState;
 }
 
-export const registerUser = (model) => {
+export const loginUser = (model) => {
     return (dispatch) => {
-        dispatch({type: REGISTER_STARTED});
-        registerService.registerUser(model)
+        dispatch({type: LOGIN_STARTED});
+        loginService.loginUser(model)
             .then((response)=>
             {
                 //console.log('Server message', response.data);
-                dispatch({type: REGISTER_SUCCESS});
+                dispatch({type: LOGIN_SUCCESS});
                 dispatch(push('/'));
             }, err => {
-                dispatch({type: REGISTER_FAILED, servErrors: err.response.data});
+                dispatch({type: LOGIN_FAILED, servErrors: err.response.data});
                 console.log('Server problen in controler message', err.response.data);
             })
             .catch(err=> {

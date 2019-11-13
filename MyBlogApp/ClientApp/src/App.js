@@ -5,9 +5,9 @@ import Home from './components/Home';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
 
-import Login from './components/Auth/Login/Login';
+import Login from './components/Auth/Login';
 
-import Registration from './components/Auth/Registration/Registration';
+import Registration from './components/Auth/Registration';
 
 export default () => (
   <Layout>

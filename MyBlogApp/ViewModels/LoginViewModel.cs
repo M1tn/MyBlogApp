@@ -8,7 +8,7 @@ namespace MyBlogApp.ViewModels
 {
     public class LoginViewModel
     {
-        [EmailAddress(ErrorMessage = "Має бути пошта!")]
+        [EmailAddress]
         [Required(ErrorMessage = "Поле не може бути пустим!")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Поле не може бути пустим!")]

@@ -1,37 +1,44 @@
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
-import * as Counter from './Counter';
-import * as WeatherForecasts from './WeatherForecasts';
-import {registerReducer} from "../components/Auth/Registration/reducer";
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+// import * as Counter from './Counter';
+// import * as WeatherForecasts from './WeatherForecasts';
+import { createBrowserHistory } from 'history';
+import { registerReducer } from '../components/Auth/Registration/reducer';
+import { loginReducer } from '../components/Auth/Login/reducer';
 
-export default function configureStore (history, initialState) {
-  const reducers = {
-    counter: Counter.reducer,
-    weatherForecasts: WeatherForecasts.reducer,
-    register: registerReducer
-  };
+// Create browser history to use in the Redux store
+const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
+export const history = createBrowserHistory({ basename: baseUrl });
 
-  const middleware = [
-    thunk,
-    routerMiddleware(history)
-  ];
+export default function configureStore(history, initialState) {
+    const reducers = {
+        // counter: Counter.reducer,
+        // weatherForecasts: WeatherForecasts.reducer,
+        register: registerReducer,
+        login: loginReducer
+    };
 
-  // In development, use the browser's Redux dev tools extension if installed
-  const enhancers = [];
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  if (isDevelopment && typeof window !== 'undefined' && window.devToolsExtension) {
-    enhancers.push(window.devToolsExtension());
-  }
+    const middleware = [
+        thunk,
+        routerMiddleware(history)
+    ];
 
-  const rootReducer = combineReducers({
-    ...reducers,
-    routing: routerReducer
-  });
+    // In development, use the browser's Redux dev tools extension if installed
+    const enhancers = [];
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    if (isDevelopment && typeof window !== 'undefined' && window.devToolsExtension) {
+        enhancers.push(window.devToolsExtension());
+    }
 
-  return createStore(
-    rootReducer,
-    initialState,
-    compose(applyMiddleware(...middleware), ...enhancers)
-  );
+    const rootReducer = combineReducers({
+        ...reducers,
+        router: connectRouter(history)
+    });
+
+    return createStore(
+        rootReducer,
+        initialState,
+        compose(applyMiddleware(...middleware), ...enhancers)
+    );
 }
