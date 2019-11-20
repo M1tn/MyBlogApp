@@ -57,9 +57,11 @@ namespace MyBlogApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -76,15 +78,32 @@ namespace MyBlogApp.Migrations
                 {
                     b.Property<int>("UserId");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.AdminProfile", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("Photo");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblAdminProfiles");
                 });
 
             modelBuilder.Entity("MyBlogApp.DAL.Entities.DbRole", b =>
@@ -119,9 +138,6 @@ namespace MyBlogApp.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
@@ -161,8 +177,6 @@ namespace MyBlogApp.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("DbUser");
                 });
 
             modelBuilder.Entity("MyBlogApp.DAL.Entities.DbUserRole", b =>
@@ -186,6 +200,8 @@ namespace MyBlogApp.Migrations
                     b.Property<string>("Description");
 
                     b.Property<string>("Name");
+
+                    b.Property<string>("Photo");
 
                     b.Property<string>("UrlSlug");
 
@@ -259,9 +275,9 @@ namespace MyBlogApp.Migrations
                     b.ToTable("tblTags");
                 });
 
-            modelBuilder.Entity("MyBlogApp.DAL.Entities.AdminProfile", b =>
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.UserProfile", b =>
                 {
-                    b.HasBaseType("MyBlogApp.DAL.Entities.DbUser");
+                    b.Property<int>("Id");
 
                     b.Property<string>("FirstName");
 
@@ -269,23 +285,9 @@ namespace MyBlogApp.Migrations
 
                     b.Property<string>("Photo");
 
-                    b.HasDiscriminator().HasValue("AdminProfile");
-                });
+                    b.HasKey("Id");
 
-            modelBuilder.Entity("MyBlogApp.DAL.Entities.UserProfile", b =>
-                {
-                    b.HasBaseType("MyBlogApp.DAL.Entities.DbUser");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnName("UserProfile_FirstName");
-
-                    b.Property<string>("LastName")
-                        .HasColumnName("UserProfile_LastName");
-
-                    b.Property<string>("Photo")
-                        .HasColumnName("UserProfile_Photo");
-
-                    b.HasDiscriminator().HasValue("UserProfile");
+                    b.ToTable("tblUserProfiles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -317,6 +319,14 @@ namespace MyBlogApp.Migrations
                     b.HasOne("MyBlogApp.DAL.Entities.DbUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.AdminProfile", b =>
+                {
+                    b.HasOne("MyBlogApp.DAL.Entities.DbUser", "User")
+                        .WithOne("AdminProfile")
+                        .HasForeignKey("MyBlogApp.DAL.Entities.AdminProfile", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -355,6 +365,14 @@ namespace MyBlogApp.Migrations
                     b.HasOne("MyBlogApp.DAL.Entities.Post.Tag", "TagOf")
                         .WithMany("PostTags")
                         .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.UserProfile", b =>
+                {
+                    b.HasOne("MyBlogApp.DAL.Entities.DbUser", "User")
+                        .WithOne("UserProfile")
+                        .HasForeignKey("MyBlogApp.DAL.Entities.UserProfile", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

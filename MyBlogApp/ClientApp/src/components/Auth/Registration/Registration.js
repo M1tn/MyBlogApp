@@ -9,6 +9,7 @@ import EclipseWidget from '../../Eclipse';
 
 
 
+
 const propTypes = {
     register: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired

@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyBlogApp.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20191028082313_add Identity to db")]
-    partial class addIdentitytodb
+    [Migration("20191114134650_first_migration")]
+    partial class first_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,9 +59,11 @@ namespace MyBlogApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -78,15 +80,32 @@ namespace MyBlogApp.Migrations
                 {
                     b.Property<int>("UserId");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.AdminProfile", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("Photo");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblAdminProfiles");
                 });
 
             modelBuilder.Entity("MyBlogApp.DAL.Entities.DbRole", b =>
@@ -168,19 +187,109 @@ namespace MyBlogApp.Migrations
 
                     b.Property<int>("RoleId");
 
-                    b.Property<int?>("RoleId1");
-
-                    b.Property<int?>("UserId1");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("RoleId1");
-
-                    b.HasIndex("UserId1");
-
                     b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.Post.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Photo");
+
+                    b.Property<string>("UrlSlug");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblCategory");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.Post.MyPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AdminProfileId");
+
+                    b.Property<int?>("CategoryId");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Meta");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<string>("Photo");
+
+                    b.Property<DateTime>("PostedOn");
+
+                    b.Property<bool>("Published");
+
+                    b.Property<string>("ShortDescription");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("UrlSlug");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminProfileId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("tblPosts");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.Post.PostTag", b =>
+                {
+                    b.Property<int>("PostId");
+
+                    b.Property<int>("TagId");
+
+                    b.HasKey("PostId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("tblPostsTags");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.Post.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("UrlSlug");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblTags");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.UserProfile", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("Photo");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblUserProfiles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -215,25 +324,58 @@ namespace MyBlogApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.AdminProfile", b =>
+                {
+                    b.HasOne("MyBlogApp.DAL.Entities.DbUser", "User")
+                        .WithOne("AdminProfile")
+                        .HasForeignKey("MyBlogApp.DAL.Entities.AdminProfile", "Id")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("MyBlogApp.DAL.Entities.DbUserRole", b =>
                 {
-                    b.HasOne("MyBlogApp.DAL.Entities.DbRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("MyBlogApp.DAL.Entities.DbRole", "Role")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleId1");
-
-                    b.HasOne("MyBlogApp.DAL.Entities.DbUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MyBlogApp.DAL.Entities.DbUser", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.Post.MyPost", b =>
+                {
+                    b.HasOne("MyBlogApp.DAL.Entities.AdminProfile", "AdminProfile")
+                        .WithMany("MyPosts")
+                        .HasForeignKey("AdminProfileId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MyBlogApp.DAL.Entities.Post.Category", "Category")
+                        .WithMany("Posts")
+                        .HasForeignKey("CategoryId");
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.Post.PostTag", b =>
+                {
+                    b.HasOne("MyBlogApp.DAL.Entities.Post.MyPost", "MyPostOf")
+                        .WithMany("PostTags")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MyBlogApp.DAL.Entities.Post.Tag", "TagOf")
+                        .WithMany("PostTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MyBlogApp.DAL.Entities.UserProfile", b =>
+                {
+                    b.HasOne("MyBlogApp.DAL.Entities.DbUser", "User")
+                        .WithOne("UserProfile")
+                        .HasForeignKey("MyBlogApp.DAL.Entities.UserProfile", "Id")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -8,6 +8,7 @@ import FetchData from './components/FetchData';
 import Login from './components/Auth/Login';
 
 import Registration from './components/Auth/Registration';
+import AddPost from './components/AddPost'
 
 export default () => (
   <Layout>
@@ -16,5 +17,6 @@ export default () => (
     <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
     <Route path='/login' component={Login} />
     <Route path='/registration' component={Registration} />
+    <Route path='/addpost' component={AddPost} />
   </Layout>
 );

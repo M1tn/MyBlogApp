@@ -1,15 +1,20 @@
 import registerService from './registerService';
 import { push } from 'connected-react-router';
+import { loginByJWT } from '../Login/reducer';
 
 export const REGISTER_STARTED = "user/REGISTER_STARTED";
 export const REGISTER_SUCCESS = "user/REGISTER_SUCCESS";
 export const REGISTER_FAILED = "user/REGISTER_FAILED";
 
+
+
+
 const initialState = {
     loading: false,
     success: false,
     failed: false,
-    errors: {}
+    errors: {},
+    
 }
 
 export const registerReducer = (state = initialState, action) => {
@@ -25,6 +30,7 @@ export const registerReducer = (state = initialState, action) => {
             newState = {...state, loading: false};
             break;
         }
+        
         case REGISTER_FAILED: {
             //console.log('-----Filed register User--------');
             newState = {
@@ -49,6 +55,7 @@ export const registerUser = (model) => {
             {
                 //console.log('Server message', response.data);
                 dispatch({type: REGISTER_SUCCESS});
+                loginByJWT(response.data, dispatch);
                 dispatch(push('/'));
             }, err => {
                 dispatch({type: REGISTER_FAILED, servErrors: err.response.data});

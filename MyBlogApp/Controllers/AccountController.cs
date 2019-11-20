@@ -77,10 +77,24 @@ namespace MyBlogApp.Controllers
             {
                 return BadRequest(new { email = "Користувач з такою поштою вже існує." });
             }
-            user = new DbUser
+
+            //user = new DbUser
+            //{
+            //    UserName = model.Email,
+            //    Email = model.Email
+            //};
+
+            var userProfile = new UserProfile
+            {
+                FirstName = model.First_name,
+                LastName = model.Last_name
+               
+            };
+            user = new DbUser()
             {
                 UserName = model.Email,
-                Email = model.Email
+                Email = model.Email,
+                UserProfile = userProfile
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
